@@ -1,13 +1,9 @@
 # Submission Information
-
 Applicant Name: Praneeth Salla
-
-Applicant Email Address: praneethsalla@gmail.com
-
+Applicant Email Address: praneethsalla2@gmail.com
 Deployed Project URL: (To be deployed via Railway - see deployment instructions in README)
 
 ## Project Completion Summary
-
 ### Backend Engineering ✅
 - **Database Architecture**: Created normalized PostgreSQL database schema with 6 tables (Teams, Games, Players, Shots, Passes, Turnovers)
 - **Data Loading**: Implemented comprehensive data loading script that processes JSON data and populates the database
@@ -20,7 +16,6 @@ Deployed Project URL: (To be deployed via Railway - see deployment instructions 
 - **TypeScript Interfaces**: Created comprehensive interfaces for player summary data structure
 - **Component Updates**: Enhanced player-summary component with proper typing and error handling
 - **Service Integration**: Updated PlayersService with proper TypeScript types
-
 ### Key Features Implemented
 1. **Normalized Database Schema**: Eliminates data redundancy and ensures referential integrity
 2. **Comprehensive Statistics**: Tracks shots, passes, turnovers with location coordinates
