@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Analytics - Player Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .player-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+            background: #fafafa;
+        }
+        .player-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .rank-value {
+            color: #4CAF50;
+        }
+        .action-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .action-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .error {
+            color: #f44336;
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .player-selector {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏀 Basketball Analytics - Player Summary</h1>
+        
+        <div class="player-selector">
+            <label for="playerSelect">Select Player:</label>
+            <select id="playerSelect" onchange="loadPlayerData()">
+                <option value="">Choose a player...</option>
+                <option value="0">Michael Jordan</option>
+                <option value="1">Pound</option>
+                <option value="2">Buddy</option>
+                <option value="3">Uncle Drew</option>
+                <option value="4">Goofy</option>
+                <option value="5">David Greene</option>
+                <option value="6">Scott Howard</option>
+                <option value="7">LeBron James</option>
+                <option value="8">Chronos</option>
+                <option value="9">Brian Newall</option>
+            </select>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            Loading player data...
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div id="playerData" style="display: none;">
+            <div class="player-card">
+                <div class="player-name" id="playerName"></div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Total Points</div>
+                        <div class="stat-value" id="totalPoints"></div>
+                        <div class="stat-label">Rank: <span class="rank-value" id="totalPointsRank"></span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Shot Attempts</div>
+                        <div class="stat-value" id="totalShotAttempts"></div>
+                        <div class="stat-label">Rank: <span class="rank-value" id="totalShotAttemptsRank"></span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Passes</div>
+                        <div class="stat-value" id="totalPasses"></div>
+                        <div class="stat-label">Rank: <span class="rank-value" id="totalPassesRank"></span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Potential Assists</div>
+                        <div class="stat-value" id="totalPotentialAssists"></div>
+                        <div class="stat-label">Rank: <span class="rank-value" id="totalPotentialAssistsRank"></span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Turnovers</div>
+                        <div class="stat-value" id="totalTurnovers"></div>
+                        <div class="stat-label">Rank: <span class="rank-value" id="totalTurnoversRank"></span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Passing Turnovers</div>
+                        <div class="stat-value" id="totalPassingTurnovers"></div>
+                        <div class="stat-label">Rank: <span class="rank-value" id="totalPassingTurnoversRank"></span></div>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <div class="action-title">Pick & Roll</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Actions</div>
+                            <div class="stat-value" id="pickAndRollCount"></div>
+                            <div class="stat-label">Rank: <span class="rank-value" id="pickAndRollCountRank"></span></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Points</div>
+                            <div class="stat-value" id="pickAndRollPoints"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Shots</div>
+                            <div class="stat-value" id="pickAndRollShots"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Passes</div>
+                            <div class="stat-value" id="pickAndRollPasses"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <div class="action-title">Isolation</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Actions</div>
+                            <div class="stat-value" id="isolationCount"></div>
+                            <div class="stat-label">Rank: <span class="rank-value" id="isolationCountRank"></span></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Points</div>
+                            <div class="stat-value" id="isolationPoints"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Shots</div>
+                            <div class="stat-value" id="isolationShots"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Passes</div>
+                            <div class="stat-value" id="isolationPasses"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <div class="action-title">Post-Up</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Actions</div>
+                            <div class="stat-value" id="postUpCount"></div>
+                            <div class="stat-label">Rank: <span class="rank-value" id="postUpCountRank"></span></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Points</div>
+                            <div class="stat-value" id="postUpPoints"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Shots</div>
+                            <div class="stat-value" id="postUpShots"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Passes</div>
+                            <div class="stat-value" id="postUpPasses"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <div class="action-title">Off-Ball Screen</div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Actions</div>
+                            <div class="stat-value" id="offBallScreenCount"></div>
+                            <div class="stat-label">Rank: <span class="rank-value" id="offBallScreenCountRank"></span></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Points</div>
+                            <div class="stat-value" id="offBallScreenPoints"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Shots</div>
+                            <div class="stat-value" id="offBallScreenShots"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Passes</div>
+                            <div class="stat-value" id="offBallScreenPasses"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadPlayerData() {
+            const playerId = document.getElementById('playerSelect').value;
+            if (!playerId) {
+                document.getElementById('playerData').style.display = 'none';
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('playerData').style.display = 'none';
+
+            try {
+                const response = await fetch(`http://localhost:8000/api/v1/playerSummary/${playerId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Populate player data
+                    document.getElementById('playerName').textContent = data.name;
+                    document.getElementById('totalPoints').textContent = data.totalPoints;
+                    document.getElementById('totalShotAttempts').textContent = data.totalShotAttempts;
+                    document.getElementById('totalPasses').textContent = data.totalPasses;
+                    document.getElementById('totalPotentialAssists').textContent = data.totalPotentialAssists;
+                    document.getElementById('totalTurnovers').textContent = data.totalTurnovers;
+                    document.getElementById('totalPassingTurnovers').textContent = data.totalPassingTurnovers;
+
+                    // Rankings
+                    document.getElementById('totalPointsRank').textContent = data.totalPointsRank;
+                    document.getElementById('totalShotAttemptsRank').textContent = data.totalShotAttemptsRank;
+                    document.getElementById('totalPassesRank').textContent = data.totalPassesRank;
+                    document.getElementById('totalPotentialAssistsRank').textContent = data.totalPotentialAssistsRank;
+                    document.getElementById('totalTurnoversRank').textContent = data.totalTurnoversRank;
+                    document.getElementById('totalPassingTurnoversRank').textContent = data.totalPassingTurnoversRank;
+
+                    // Action counts and ranks
+                    document.getElementById('pickAndRollCount').textContent = data.pickAndRollCount;
+                    document.getElementById('pickAndRollCountRank').textContent = data.pickAndRollCountRank;
+                    document.getElementById('pickAndRollPoints').textContent = data.pickAndRoll.totalPoints;
+                    document.getElementById('pickAndRollShots').textContent = data.pickAndRoll.totalShotAttempts;
+                    document.getElementById('pickAndRollPasses').textContent = data.pickAndRoll.totalPasses;
+
+                    document.getElementById('isolationCount').textContent = data.isolationCount;
+                    document.getElementById('isolationCountRank').textContent = data.isolationCountRank;
+                    document.getElementById('isolationPoints').textContent = data.isolation.totalPoints;
+                    document.getElementById('isolationShots').textContent = data.isolation.totalShotAttempts;
+                    document.getElementById('isolationPasses').textContent = data.isolation.totalPasses;
+
+                    document.getElementById('postUpCount').textContent = data.postUpCount;
+                    document.getElementById('postUpCountRank').textContent = data.postUpCountRank;
+                    document.getElementById('postUpPoints').textContent = data.postUp.totalPoints;
+                    document.getElementById('postUpShots').textContent = data.postUp.totalShotAttempts;
+                    document.getElementById('postUpPasses').textContent = data.postUp.totalPasses;
+
+                    document.getElementById('offBallScreenCount').textContent = data.offBallScreenCount;
+                    document.getElementById('offBallScreenCountRank').textContent = data.offBallScreenCountRank;
+                    document.getElementById('offBallScreenPoints').textContent = data.offBallScreen.totalPoints;
+                    document.getElementById('offBallScreenShots').textContent = data.offBallScreen.totalShotAttempts;
+                    document.getElementById('offBallScreenPasses').textContent = data.offBallScreen.totalPasses;
+
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('playerData').style.display = 'block';
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${data.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = `Error loading player data: ${error.message}`;
+            }
+        }
+
+        // Load Michael Jordan by default
+        window.onload = function() {
+            document.getElementById('playerSelect').value = '0';
+            loadPlayerData();
+        };
+    </script>
+</body>
+</html>
