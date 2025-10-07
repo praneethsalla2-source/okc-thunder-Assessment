@@ -4,6 +4,7 @@
         "buildCommand": "pip install -r requirements.txt"
     },
     "deploy": {
-        "startCommand": "PYTHONPATH=. python manage.py migrate && python manage.py collectstatic --noinput && gunicorn app.wsgi --bind [::]:${PORT}"
+        "startCommand": "gunicorn app.wsgi --bind 0.0.0.0:${PORT}",
+        "preDeployCommand": "python manage.py migrate && python manage.py collectstatic --noinput"
     }
 }
