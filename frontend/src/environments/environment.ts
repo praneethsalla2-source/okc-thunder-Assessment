@@ -1,4 +1,6 @@
 export const environment = {
   production: false,
-  BACKEND_PUBLIC_DOMAIN: 'backend-production-aee1.up.railway.app'
-};
+  // BACKEND_PUBLIC_DOMAIN: 'http://localhost:8000'
+  BACKEND_PUBLIC_DOMAIN: 'backend-production-c87e.up.railway.app'
+
+}
