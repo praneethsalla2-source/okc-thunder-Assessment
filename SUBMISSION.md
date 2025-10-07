@@ -1,7 +1,9 @@
 # Submission Information
 Applicant Name: Praneeth Salla
 Applicant Email Address: praneethsalla2@gmail.com
-Deployed Project URL: (To be deployed via Railway - see deployment instructions in README)
+Deployed Project URL: https://frontend-production-c8ed.up.railway.app
+
+Backend API URL: https://backend-production-5f0f.up.railway.app
 
 ## Project Completion Summary
 ### Backend Engineering ✅
