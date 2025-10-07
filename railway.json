@@ -1,0 +1,23 @@
+{
+  "services": {
+    "backend": {
+      "build": {
+        "builder": "RAILPACK",
+        "buildCommand": "cd backend && pip install -r requirements.txt"
+      },
+      "deploy": {
+        "startCommand": "cd backend && gunicorn app.wsgi --bind 0.0.0.0:8080",
+        "preDeployCommand": "cd backend && python manage.py migrate && python manage.py collectstatic --noinput"
+      }
+    },
+    "frontend": {
+      "build": {
+        "builder": "RAILPACK",
+        "buildCommand": "cd frontend && npm install && npm run build"
+      },
+      "deploy": {
+        "startCommand": "cd frontend && node server.js"
+      }
+    }
+  }
+}
